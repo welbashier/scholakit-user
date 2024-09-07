@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -17,7 +18,8 @@ import jakarta.persistence.TemporalType;
 public class SmUser {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "userSeqGen")
+    @SequenceGenerator(name = "userSeqGen", sequenceName = "SM_USER_SEQ", allocationSize = 1)
     @Column(name = "USER_ID")
     private Long userId;
 
@@ -70,6 +72,8 @@ public class SmUser {
 
     @Column(name = "USER_CODE", length = 20)
     private String userCode;
+    
+    // TODO: add roles
 
     // Getters and setters
 
