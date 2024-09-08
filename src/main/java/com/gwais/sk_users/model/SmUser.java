@@ -2,6 +2,7 @@ package com.gwais.sk_users.model;
 
 import java.sql.Date;
 import java.util.Objects;
+import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -73,7 +74,8 @@ public class SmUser {
     @Column(name = "USER_CODE", length = 20)
     private String userCode;
     
-    // TODO: add roles
+    // TODO: map roles to correspondent table
+    private Set<SkRole> Roles;
 
     // Getters and setters
 
@@ -211,6 +213,14 @@ public class SmUser {
 
 	public void setUserCode(String userCode) {
 		this.userCode = userCode;
+	}
+
+	public Set<SkRole> getRoles() {
+		return Roles;
+	}
+
+	public void setRoles(Set<SkRole> roles) {
+		Roles = roles;
 	}
 
 	@Override

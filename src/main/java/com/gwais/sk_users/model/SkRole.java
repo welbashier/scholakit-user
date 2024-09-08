@@ -1,5 +1,9 @@
 package com.gwais.sk_users.model;
 
+import java.io.Serializable;
+
+import org.springframework.security.core.GrantedAuthority;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,9 +14,11 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "SM_ROLE")
-public class SkRole {
+public class SkRole implements GrantedAuthority, Serializable {
 	
-    @Id
+	private static final long serialVersionUID = -4663757502622001269L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roleSeqGen")
     @SequenceGenerator(name = "roleSeqGen", sequenceName = "SM_ROLE_SEQ", allocationSize = 1)
     @Column(name = "ID")
@@ -68,4 +74,16 @@ public class SkRole {
     public void setRoleCode(String roleCode) {
         this.roleCode = roleCode;
     }
+
+	@Override
+	public String getAuthority() {
+        return roleCode;
+	}
+
+	@Override
+	public String toString() {
+		return "SkRole [id=" + id + ", roleDescription=" + roleDescription + ", comments=" + comments + ", roleCode="
+				+ roleCode + "]";
+	}
+    
 }
