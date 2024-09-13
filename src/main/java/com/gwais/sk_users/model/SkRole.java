@@ -1,6 +1,7 @@
 package com.gwais.sk_users.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 
@@ -9,6 +10,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -32,7 +34,10 @@ public class SkRole implements GrantedAuthority, Serializable {
 
     @Column(name = "ROLE_CODE", length = 20, nullable = false, unique = true)
     private String roleCode;
-
+    
+    @ManyToMany(mappedBy = "roles")  // This field is mapped by the "roles" field in the User entity
+    private Set<SmUser> users;
+    
     // Constructors
     public SkRole() {}
 
@@ -80,10 +85,18 @@ public class SkRole implements GrantedAuthority, Serializable {
         return roleCode;
 	}
 
+    public Set<SmUser> getUsers() {
+        return users;
+    }
+
+    public void setUsers(Set<SmUser> users) {
+        this.users = users;
+    }
+
 	@Override
 	public String toString() {
 		return "SkRole [id=" + id + ", roleDescription=" + roleDescription + ", comments=" + comments + ", roleCode="
-				+ roleCode + "]";
+				+ roleCode + ", users=" + users + "]";
 	}
     
 }

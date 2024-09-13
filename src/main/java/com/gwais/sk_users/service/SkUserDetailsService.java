@@ -15,6 +15,7 @@ public class SkUserDetailsService implements UserDetailsService {
     @Autowired
     private SkUserRepository userRepository;
 
+    
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     	
@@ -24,6 +25,7 @@ public class SkUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
         
+        // switch `SmUser` to `UserDetails` to be handled by the framework
         return new org.springframework.security.core.userdetails
         		.User(user.getUsername(), user.getPassword(), user.getRoles());
     }

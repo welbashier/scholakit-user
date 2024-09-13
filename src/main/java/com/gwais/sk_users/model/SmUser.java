@@ -6,9 +6,13 @@ import java.util.Set;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -74,8 +78,13 @@ public class SmUser {
     @Column(name = "USER_CODE", length = 20)
     private String userCode;
     
-    // TODO: map roles to correspondent table
-    private Set<SkRole> Roles;
+    @ManyToMany(fetch = FetchType.EAGER)  // Load roles eagerly when fetching the user
+    @JoinTable(
+        name = "sk_user_role",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Set<SkRole> roles;
 
     // Getters and setters
 
@@ -216,26 +225,18 @@ public class SmUser {
 	}
 
 	public Set<SkRole> getRoles() {
-		return Roles;
+		return roles;
 	}
 
 	public void setRoles(Set<SkRole> roles) {
-		Roles = roles;
-	}
-
-	@Override
-	public String toString() {
-		return "SmUser [userId=" + userId + ", firstName=" + firstName + ", secondName=" + secondName + ", thirdName="
-				+ thirdName + ", lastName=" + lastName + ", dateOfBirth=" + dateOfBirth + ", dateOfDeath=" + dateOfDeath
-				+ ", gender=" + gender + ", race=" + race + ", profilePhotoPath=" + profilePhotoPath + ", username="
-				+ username + ", password=" + password + ", ssn=" + ssn + ", accountStatus=" + accountStatus
-				+ ", dateLastLogon=" + dateLastLogon + ", timesLogon=" + timesLogon + ", userCode=" + userCode + "]";
+		this.roles = roles;
 	}
 
 	@Override
 	public int hashCode() {
 		return Objects.hash(accountStatus, dateLastLogon, dateOfBirth, dateOfDeath, firstName, gender, lastName,
-				password, profilePhotoPath, race, secondName, ssn, thirdName, timesLogon, userCode, userId, username);
+				password, profilePhotoPath, race, roles, secondName, ssn, thirdName, timesLogon, userCode, userId,
+				username);
 	}
 
 	@Override
@@ -252,10 +253,20 @@ public class SmUser {
 				&& Objects.equals(firstName, other.firstName) && Objects.equals(gender, other.gender)
 				&& Objects.equals(lastName, other.lastName) && Objects.equals(password, other.password)
 				&& Objects.equals(profilePhotoPath, other.profilePhotoPath) && Objects.equals(race, other.race)
-				&& Objects.equals(secondName, other.secondName) && Objects.equals(ssn, other.ssn)
-				&& Objects.equals(thirdName, other.thirdName) && Objects.equals(timesLogon, other.timesLogon)
-				&& Objects.equals(userCode, other.userCode) && Objects.equals(userId, other.userId)
-				&& Objects.equals(username, other.username);
+				&& Objects.equals(roles, other.roles) && Objects.equals(secondName, other.secondName)
+				&& Objects.equals(ssn, other.ssn) && Objects.equals(thirdName, other.thirdName)
+				&& Objects.equals(timesLogon, other.timesLogon) && Objects.equals(userCode, other.userCode)
+				&& Objects.equals(userId, other.userId) && Objects.equals(username, other.username);
+	}
+
+	@Override
+	public String toString() {
+		return "SmUser [userId=" + userId + ", firstName=" + firstName + ", secondName=" + secondName + ", thirdName="
+				+ thirdName + ", lastName=" + lastName + ", dateOfBirth=" + dateOfBirth + ", dateOfDeath=" + dateOfDeath
+				+ ", gender=" + gender + ", race=" + race + ", profilePhotoPath=" + profilePhotoPath + ", username="
+				+ username + ", password=" + password + ", ssn=" + ssn + ", accountStatus=" + accountStatus
+				+ ", dateLastLogon=" + dateLastLogon + ", timesLogon=" + timesLogon + ", userCode=" + userCode
+				+ ", roles=" + roles + "]";
 	}
     
 }
