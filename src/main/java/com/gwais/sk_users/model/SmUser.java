@@ -80,9 +80,9 @@ public class SmUser {
     
     @ManyToMany(fetch = FetchType.EAGER)  // Load roles eagerly when fetching the user
     @JoinTable(
-        name = "sk_user_role",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id")
+        name = "SM_USER_ROLE",
+        joinColumns = @JoinColumn(name = "USER_ID"),
+        inverseJoinColumns = @JoinColumn(name = "ROLE_ID")
     )
     private Set<SkRole> roles;
 
