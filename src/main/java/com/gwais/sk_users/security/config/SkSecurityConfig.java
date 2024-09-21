@@ -27,6 +27,7 @@ public class SkSecurityConfig {
     @Autowired
     private final JwtRequestFilter jwtAuthenticationFilter;
     
+    
     public SkSecurityConfig(JwtRequestFilter jwtAuthenticationFilter, SkUserDetailsService myUserDetailsService) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.userService = myUserDetailsService;
@@ -61,7 +62,7 @@ public class SkSecurityConfig {
         return http
             .csrf(csrf -> csrf.disable()) // Disable CSRF for stateless authentication
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll() // Allow public access to authentication endpoints
+                .requestMatchers("/api/auth/login").permitAll() // Allow public access only to the login endpoint
                 .anyRequest()
                 .authenticated() // All other requests require authentication
             )
@@ -69,7 +70,7 @@ public class SkSecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No sessions for stateless JWT auth
             )
             //.authenticationProvider(authenticationProvider)
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Add JWT filter
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class) // Add my custom JWT filter
             .build();
     }
 }

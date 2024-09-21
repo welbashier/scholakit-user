@@ -49,18 +49,22 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             username = jwtTokenUtil.extractUsername(token);
         }
 
-        // if username passed but no authenticated yet
+        // if username is passed-in but not authenticated yet: validate against the database
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails savedUserDetails = myUserDetailsService.loadUserByUsername(username);
 
             if (jwtTokenUtil.validateToken(token, savedUserDetails)) {
+            	// valid user
+            	// (1) create an authentication object for that user (in Spring)
                 UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(
                     		savedUserDetails, 
-                    		null, /* why not: savedUserDetails.getPassword() ? */
+                    		null, /* password not needed for already authenticated user */
                     		savedUserDetails.getAuthorities());
                 
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                
+                // (2) Add the authentication object to Spring Security Context
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
