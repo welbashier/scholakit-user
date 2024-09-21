@@ -17,7 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gwais.sk_users.dto.AuthenticationRequest;
 import com.gwais.sk_users.dto.RegistrationRequest;
 import com.gwais.sk_users.security.util.JwtTokenUtil;
+import com.gwais.sk_users.security.util.SkAuthenticationSuccessHandler;
 import com.gwais.sk_users.service.SkUserDetailsService;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -32,6 +35,9 @@ public class SkAuthController {
     @Autowired
     private SkUserDetailsService userDetailsService;
 
+    @Autowired
+    private SkAuthenticationSuccessHandler authenticationSuccessHandler;
+    
     
     @PostMapping("/register")
     public ResponseEntity<?> registerNewUser(
@@ -39,7 +45,8 @@ public class SkAuthController {
     		) throws Exception {
     	Long registeredId = 0l;
     	try {
-			/* First, the JWT token must be present (passed-in)
+			/* 
+			 * First, the JWT token must be present (passed-in)
 			 * Second, the Security Filter kicks in to authenticate the token
 			 * 		if the authentication fails it issues an exception an returns
 			 * 		otherwise, it continues on..
@@ -69,7 +76,7 @@ public class SkAuthController {
     
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(
-    		@RequestBody AuthenticationRequest authRequest
+    		@RequestBody AuthenticationRequest authRequest, HttpServletResponse response
     		) throws Exception {
     	String jwt;
     	
@@ -84,6 +91,9 @@ public class SkAuthController {
 
     		// Authenticate it. This includes calling loadUserByUsername() via framework
     		Authentication authenticate = authenticationManager.authenticate(authentication);
+    		
+    		// Call the success handler manually
+    		authenticationSuccessHandler.onAuthenticationSuccessManual(response, authenticate);
     		
             // Create the JWT token
 			String authenticatedUsername = authenticate.getName();

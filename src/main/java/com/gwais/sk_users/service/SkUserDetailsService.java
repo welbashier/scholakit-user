@@ -46,7 +46,8 @@ public class SkUserDetailsService implements UserDetailsService {
 		newUser.setFirstName(regRequest.getFirstName());
 		newUser.setLastName(regRequest.getLastName());
 		newUser.setPassword(generateTempPassword());
-		// TODO save the temp password as PIN_NUMBER along with PIN_EXPIRED_DATE, in table SM_USER
+		// TODO save the temp password as PIN_NUMBER 
+		// along with PIN_EXPIRED_DATE, in table SM_USER
 		newUser.setUsername(regRequest.getEmailAddress());
 		newUser.setAccountStatus("P");	// P=Pending
 		
