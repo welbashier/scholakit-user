@@ -47,6 +47,12 @@ public class JwtTokenUtil {
         Map<String, Object> claims = new HashMap<>();
         return generateToken(claims, userDetails.getUsername());
     }
+
+    // generate token from username, with empty claims
+	public String generateToken(String username) {
+        Map<String, Object> claims = new HashMap<>();
+        return generateToken(claims, username);
+    }
     
 	public String generateToken(Map<String, Object> claims, String subject) {
         long currentTimeMillis = System.currentTimeMillis();

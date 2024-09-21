@@ -86,6 +86,12 @@
 			<optional>true</optional>
 		</dependency>
 		
+		<!-- Strings Utils -->
+		<dependency>
+		    <groupId>org.apache.commons</groupId>
+		    <artifactId>commons-lang3</artifactId>
+		</dependency>
+		
 		<!-- Add H2 for in-memory database testing -->
 		<dependency>
 		    <groupId>com.h2database</groupId>

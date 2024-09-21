@@ -1,21 +1,24 @@
 package com.gwais.sk_users.dto;
 
+import java.util.Set;
+
 public class RegistrationRequest {
 
     private String firstName;
     private String lastName;
-    private String emalAddress;
+    private String emailAddress;
+    private Set<String> roleDescriptions;
     
 
     // Default constructor
 	public RegistrationRequest() {
 	}
     
-	public RegistrationRequest(String firstName, String lastName, String emalAddress) {
+	public RegistrationRequest(String firstName, String lastName, String emailAddress) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
-		this.emalAddress = emalAddress;
+		this.emailAddress = emailAddress;
 	}
 
 	public String getFirstName() {
@@ -34,12 +37,20 @@ public class RegistrationRequest {
 		this.lastName = lastName;
 	}
 	
-	public String getEmalAddress() {
-		return emalAddress;
+	public String getEmailAddress() {
+		return emailAddress;
 	}
 	
-	public void setEmalAddress(String emalAddress) {
-		this.emalAddress = emalAddress;
+	public void setEmailAddress(String emailAddress) {
+		this.emailAddress = emailAddress;
+	}
+
+	public Set<String> getRoleDescriptions() {
+		return roleDescriptions;
+	}
+
+	public void setRoleDescriptions(Set<String> roleDescriptions) {
+		this.roleDescriptions = roleDescriptions;
 	}
 
 }
