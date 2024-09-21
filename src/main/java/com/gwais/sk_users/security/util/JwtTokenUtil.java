@@ -65,7 +65,7 @@ public class JwtTokenUtil {
         		.parserBuilder()
         		.setSigningKey(getSigningKey())
         		.build()
-        		.parseClaimsJws(token)
+        		.parseClaimsJws(token) /* Check for Signature Exception and others */
         		.getBody();
     }
 

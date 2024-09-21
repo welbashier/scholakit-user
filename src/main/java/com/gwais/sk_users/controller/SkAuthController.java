@@ -42,6 +42,7 @@ public class SkAuthController {
 			 * 		otherwise, it continues on..
 			 * */
     		
+    		// Authorized, go register the new user
 			registeredId = userDetailsService.register(regRequest);
 			
 		} catch (Exception e) {
@@ -54,21 +55,26 @@ public class SkAuthController {
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authRequest) throws Exception {
         try {
+			/* Filter kicks in, if JWT token is missing, filter is skipped for /login endpoint */
+
+    		// Create authentication object from the passed-in form/request
     		String username = authRequest.getUsername();
     		String password = authRequest.getPassword();
-    		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(username, password);
-    		
-    		// authenticate the Authorization header, At login this may not be there yet!
+    		UsernamePasswordAuthenticationToken authentication = 
+    				new UsernamePasswordAuthenticationToken(username, password);
+
+    		// Authenticate it
     		authenticationManager.authenticate(authentication);
 			
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
 
+        // Authorized, load the user info
         UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
-
+        
+        // Create the JWT token and return it
         String jwt = jwtUtil.generateToken(userDetails);
-
         return ResponseEntity.ok(jwt);
     }
 }
