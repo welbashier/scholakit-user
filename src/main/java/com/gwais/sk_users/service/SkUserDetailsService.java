@@ -35,9 +35,16 @@ public class SkUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
         
-        // switch `SmUser` to `UserDetails` to be handled by the framework
-        return new org.springframework.security.core.userdetails
-        		.User(user.getUsername(), user.getPassword(), user.getRoles());
+        // Convert SmUser to a Spring Security User (UserDetails)
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                true,  // active
+                true,  // accountNonExpired
+                true,  // credentialsNonExpired
+                true,  // accountNonLocked
+                user.getRoles()  // roles/authorities
+        );
     }
 
 
