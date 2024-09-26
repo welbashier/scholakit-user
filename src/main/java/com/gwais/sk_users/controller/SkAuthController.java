@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.gwais.sk_users.dto.AuthenticationRequest;
 import com.gwais.sk_users.dto.RegistrationRequest;
+import com.gwais.sk_users.rabbitmq.MessageProducer;
 import com.gwais.sk_users.security.util.JwtTokenUtil;
 import com.gwais.sk_users.security.util.SkAuthenticationSuccessHandler;
 import com.gwais.sk_users.service.SkUserDetailsService;
@@ -37,6 +38,9 @@ public class SkAuthController {
 
     @Autowired
     private SkAuthenticationSuccessHandler authenticationSuccessHandler;
+
+    @Autowired
+    private MessageProducer messageProducer;
     
     
     @PostMapping("/register")
@@ -60,6 +64,11 @@ public class SkAuthController {
     	            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
     	    	
     	    	registeredId = userDetailsService.register(regRequest);
+    	    	
+    	    	String message = "Send registration email to user id: " + registeredId;
+    	    	
+    	    	// send the message to RabbitMQ server
+				messageProducer.sendMessage(message );
     	    	
     	    } else {
     	        // User does not have the required authority
