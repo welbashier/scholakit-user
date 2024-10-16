@@ -12,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.gwais.sk_users.dto.EmailRequest;
 import com.gwais.sk_users.dto.RegistrationRequest;
 import com.gwais.sk_users.model.SmUser;
 import com.gwais.sk_users.repository.SkUserRepository;
@@ -48,21 +49,26 @@ public class SkUserDetailsService implements UserDetailsService {
     }
 
 
-	public Long register(RegistrationRequest regRequest) {
+	public EmailRequest register(RegistrationRequest regRequest) {
 		SmUser newUser = new SmUser();
 		newUser.setFirstName(regRequest.getFirstName());
 		newUser.setLastName(regRequest.getLastName());
-		newUser.setPassword(generateTempPassword());
-		// TODO save the temp password as PIN_NUMBER 
-		// along with PIN_EXPIRED_DATE, in table SM_USER
+		String tempPassword = generateTempPassword();
+		newUser.setPassword(tempPassword);
 		newUser.setUsername(regRequest.getEmailAddress());
 		newUser.setAccountStatus("P");	// P=Pending
 		
+		String verificationLink = "http://localhost:8080/emailVerification.html";
+		
 		try {
-			
 			/* The database takes care of managing uniqueness */
-			SmUser savedUser = userRepository.save(newUser);
-			return savedUser.getUserId();
+			userRepository.save(newUser);
+			
+			return new EmailRequest(
+					regRequest.getEmailAddress(), 
+					regRequest.getFirstName(), 
+					regRequest.getLastName(), 
+					tempPassword, verificationLink);
 			
 		} catch (Exception e) {
 			throw new DataIntegrityViolationException("Data integrity issue");

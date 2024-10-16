@@ -9,6 +9,7 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue myQueue() {
-        return new Queue("email-queue", false); // false = non-durable
+    	// true = durable (all messages sent to it will be persistent)
+        return new Queue("email-queue", true); 
     }
 }
