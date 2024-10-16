@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gwais.sk_users.dto.AuthenticationRequest;
+import com.gwais.sk_users.dto.EmailRequest;
 import com.gwais.sk_users.dto.RegistrationRequest;
 import com.gwais.sk_users.rabbitmq.MessageProducer;
 import com.gwais.sk_users.security.util.JwtTokenUtil;
@@ -47,7 +48,7 @@ public class SkAuthController {
     public ResponseEntity<?> registerNewUser(
     		@RequestBody RegistrationRequest regRequest
     		) throws Exception {
-    	Long registeredId = 0l;
+    	
     	try {
 			/* 
 			 * First, the JWT token must be present (passed-in)
@@ -63,12 +64,9 @@ public class SkAuthController {
     	    if (authentication != null && authentication.getAuthorities().stream()
     	            .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"))) {
     	    	
-    	    	registeredId = userDetailsService.register(regRequest);
+    	    	EmailRequest emailRequest = userDetailsService.register(regRequest);
     	    	
-    	    	String message = "Send registration email to user id: " + registeredId;
-    	    	
-    	    	// send the message to RabbitMQ server
-				messageProducer.sendMessage(message );
+				messageProducer.sendEmailRequest(emailRequest);
     	    	
     	    } else {
     	        // User does not have the required authority
@@ -79,7 +77,7 @@ public class SkAuthController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
 		}
     	
-    	return ResponseEntity.ok(registeredId);
+    	return ResponseEntity.ok("Thank you for registering. A verification email is sent out!");
     }
     
     
