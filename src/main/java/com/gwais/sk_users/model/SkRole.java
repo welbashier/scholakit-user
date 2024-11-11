@@ -5,6 +5,8 @@ import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -36,6 +38,7 @@ public class SkRole implements GrantedAuthority, Serializable {
     private String roleCode;
     
     @ManyToMany(mappedBy = "roles")  // This field is mapped by the "roles" field in the User entity
+    @JsonIgnore  // Prevent serialization of users
     private Set<SmUser> users;
     
     // Constructors
