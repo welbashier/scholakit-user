@@ -9,6 +9,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -80,7 +81,24 @@ public class SkAuthController {
     	return ResponseEntity.ok("Thank you for registering. A verification email is sent out!");
     }
     
-    
+    /*
+     * To test this from an API client, use Postman with the following steps:
+     * 		1. Select "POST" as the method type of the request
+     * 		2. For the URL, write: http://localhost:8013/api/auth/login
+     * 		3. Select: Body > Raw > JSON, and type in:
+				{
+				    "username": "jsmith",
+				    "password": "welcome!"
+				}
+	 *		4. Click "Send" button
+	 *		5. You should get a (200 OK) response along with a JWT taken
+	 *		6. That token can be used for subsequent requests (while not expired)
+	 *
+	 * To use that token in subsequent request:
+	 * 		1. Go to: Auth > Auth Type: "Bearer Token" > token: <paste the JWT>
+	 * 		2. Follow steps (1-4) above to send any request you want
+	 * 
+     */
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(
     		@RequestBody AuthenticationRequest authRequest, HttpServletResponse response
@@ -112,4 +130,26 @@ public class SkAuthController {
     	
         return ResponseEntity.ok(jwt);
     }
+    
+    
+    @GetMapping("/emailVerification")
+    public ResponseEntity<?> verifyEmailAddress(String token) throws Exception {
+    	
+    	if (token == null) {
+    		return ResponseEntity
+    				.status(HttpStatus.BAD_REQUEST)
+    				.body("Token is missing!");
+    	}
+    	
+    	try {
+    		userDetailsService.verifyEmail(token);
+			
+		} catch (Exception e) {
+			return ResponseEntity
+					.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error is encountered!");
+		}
+
+    	return ResponseEntity.ok("Email Verified");
+	}
 }

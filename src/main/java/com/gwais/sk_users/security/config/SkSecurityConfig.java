@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -22,14 +20,18 @@ import com.gwais.sk_users.service.SkUserDetailsService;
 @EnableWebSecurity
 public class SkSecurityConfig {
 
-    @Autowired
+    @SuppressWarnings("unused") // not used here, but used by the framework
+	@Autowired
     private SkUserDetailsService userService;
     
     @Autowired
     private final JwtRequestFilter jwtAuthenticationFilter;
     
     
-    public SkSecurityConfig(JwtRequestFilter jwtAuthenticationFilter, SkUserDetailsService myUserDetailsService) {
+    public SkSecurityConfig(
+    		JwtRequestFilter jwtAuthenticationFilter, 
+    		SkUserDetailsService myUserDetailsService) 
+    {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.userService = myUserDetailsService;
     }
@@ -51,7 +53,10 @@ public class SkSecurityConfig {
         return http
             .csrf(csrf -> csrf.disable()) // Disable CSRF for stateless authentication
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login").permitAll() // Allow public access only to the login endpoint
+                .requestMatchers(
+                		"/api/auth/login",
+                		"/api/auth/apply",
+                		"/api/auth/emailVerification").permitAll() // Allow public access only to these endpoints
                 .anyRequest()
                 .authenticated() // All other requests require authentication
             )

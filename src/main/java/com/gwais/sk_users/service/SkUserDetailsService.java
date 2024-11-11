@@ -17,6 +17,8 @@ import com.gwais.sk_users.dto.RegistrationRequest;
 import com.gwais.sk_users.model.SmUser;
 import com.gwais.sk_users.repository.SkUserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class SkUserDetailsService implements UserDetailsService {
 
@@ -57,8 +59,9 @@ public class SkUserDetailsService implements UserDetailsService {
 		newUser.setPassword(tempPassword);
 		newUser.setUsername(regRequest.getEmailAddress());
 		newUser.setAccountStatus("P");	// P=Pending
+		newUser.setEmailVerified(false);
 		
-		String verificationLink = "http://localhost:8080/emailVerification.html";
+		String verificationLink = "http://localhost:8013/api/auth/emailVerification?";
 		
 		try {
 			/* The database takes care of managing uniqueness */
@@ -90,5 +93,17 @@ public class SkUserDetailsService implements UserDetailsService {
 		
 		String encodedPassword = passwordEncoder.encode(randomNumeric);
 		return encodedPassword;
+	}
+
+
+	public void verifyEmail(String token) {
+		SmUser foundUser = userRepository.findByPassword(token);
+		
+		if (!foundUser.equals(null)) {
+			foundUser.setEmailVerified(true);
+			userRepository.save(foundUser);
+		} else {
+			throw new EntityNotFoundException("User account not found!");
+		}
 	}
 }

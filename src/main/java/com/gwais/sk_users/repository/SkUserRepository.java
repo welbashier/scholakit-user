@@ -11,4 +11,6 @@ public interface SkUserRepository extends JpaRepository<SmUser, Long>{
     // Custom query method to find a user by username
     SmUser findByUsername(String username);
 
+	SmUser findByPassword(String token);
+
 }

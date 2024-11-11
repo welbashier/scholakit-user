@@ -78,6 +78,9 @@ public class SmUser {
     @Column(name = "USER_CODE", length = 20)
     private String userCode;
     
+    @Column(name = "EMAIL_VERIFIED", nullable = false, length = 1)
+    private String emailVerified;
+    
     @ManyToMany(fetch = FetchType.EAGER)  // Load roles eagerly when fetching the user
     @JoinTable(
         name = "SM_USER_ROLE",
@@ -87,7 +90,7 @@ public class SmUser {
     private Set<SkRole> roles;
 
     // Getters and setters
-
+	
 	public Long getUserId() {
 		return userId;
 	}
@@ -224,6 +227,16 @@ public class SmUser {
 		this.userCode = userCode;
 	}
 
+	// Getter to convert "1"/"0" to Boolean
+    public Boolean getEmailVerified() {
+        return "1".equals(emailVerified); // Return true for "1", false for others
+    }
+
+    // Setter to convert Boolean to "1"/"0"
+    public void setEmailVerified(Boolean emailVerified) {
+        this.emailVerified = (emailVerified != null && emailVerified) ? "1" : "0"; // Convert to "1"/"0"
+    }
+
 	public Set<SkRole> getRoles() {
 		return roles;
 	}
@@ -234,9 +247,9 @@ public class SmUser {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(accountStatus, dateLastLogon, dateOfBirth, dateOfDeath, firstName, gender, lastName,
-				password, profilePhotoPath, race, roles, secondName, ssn, thirdName, timesLogon, userCode, userId,
-				username);
+		return Objects.hash(accountStatus, dateLastLogon, dateOfBirth, dateOfDeath, emailVerified, firstName, gender,
+				lastName, password, profilePhotoPath, race, roles, secondName, ssn, thirdName, timesLogon, userCode,
+				userId, username);
 	}
 
 	@Override
@@ -250,13 +263,14 @@ public class SmUser {
 		SmUser other = (SmUser) obj;
 		return Objects.equals(accountStatus, other.accountStatus) && Objects.equals(dateLastLogon, other.dateLastLogon)
 				&& Objects.equals(dateOfBirth, other.dateOfBirth) && Objects.equals(dateOfDeath, other.dateOfDeath)
-				&& Objects.equals(firstName, other.firstName) && Objects.equals(gender, other.gender)
-				&& Objects.equals(lastName, other.lastName) && Objects.equals(password, other.password)
-				&& Objects.equals(profilePhotoPath, other.profilePhotoPath) && Objects.equals(race, other.race)
-				&& Objects.equals(roles, other.roles) && Objects.equals(secondName, other.secondName)
-				&& Objects.equals(ssn, other.ssn) && Objects.equals(thirdName, other.thirdName)
-				&& Objects.equals(timesLogon, other.timesLogon) && Objects.equals(userCode, other.userCode)
-				&& Objects.equals(userId, other.userId) && Objects.equals(username, other.username);
+				&& Objects.equals(emailVerified, other.emailVerified) && Objects.equals(firstName, other.firstName)
+				&& Objects.equals(gender, other.gender) && Objects.equals(lastName, other.lastName)
+				&& Objects.equals(password, other.password) && Objects.equals(profilePhotoPath, other.profilePhotoPath)
+				&& Objects.equals(race, other.race) && Objects.equals(roles, other.roles)
+				&& Objects.equals(secondName, other.secondName) && Objects.equals(ssn, other.ssn)
+				&& Objects.equals(thirdName, other.thirdName) && Objects.equals(timesLogon, other.timesLogon)
+				&& Objects.equals(userCode, other.userCode) && Objects.equals(userId, other.userId)
+				&& Objects.equals(username, other.username);
 	}
 
 	@Override
@@ -266,7 +280,7 @@ public class SmUser {
 				+ ", gender=" + gender + ", race=" + race + ", profilePhotoPath=" + profilePhotoPath + ", username="
 				+ username + ", password=" + password + ", ssn=" + ssn + ", accountStatus=" + accountStatus
 				+ ", dateLastLogon=" + dateLastLogon + ", timesLogon=" + timesLogon + ", userCode=" + userCode
-				+ ", roles=" + roles + "]";
+				+ ", emailVerified=" + emailVerified + ", roles=" + roles + "]";
 	}
     
 }
